@@ -1,0 +1,139 @@
+.text-area {
+  width: 100%;
+}
+
+.input-card {
+  height: 100px;
+  width: 95%;
+  margin: 1rem;
+}
+.color-button {
+  min-width: 150px;
+  max-width: 150px;
+  height: 20px;
+  outline: none;
+  border: none;
+  padding-top: 5px;
+  cursor: pointer;
+}
+.btn-container {
+  display: flex;
+  width: 100%;
+  visibility: hidden;
+  position: relative;
+}
+
+.heading-container {
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(to right, #d42aa8, #7a2ee2);
+  color: white;
+}
+
+.blue {
+  background-color: #6666d3;
+}
+.purple {
+  background-color: #6d4196;
+}
+.red {
+  background-color: #ce5757;
+}
+.green {
+  background-color: #43af43;
+}
+.yellow {
+  background-color: #a8c24d;
+}
+.sky {
+  background-color: #76e7c2;
+}
+
+.sidenav-content {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.sidenav-container {
+  height: 100%;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+:host::ng-deep.mat-list-base .mat-list-item {
+  width: 150px;
+  cursor: pointer;
+}
+
+:host::ng-deep.mat-list-base .mat-list-item .mat-list-item-content {
+  padding: 0;
+}
+
+h1 {
+  margin: 0;
+  margin-left: 1rem;
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.animate-color-strips {
+  transition: all 0.5s ease;
+  position: absolute;
+  top: 0;
+  animation: fadeOut 0.5s;
+}
+
+.animate-color-strips.show-strips {
+  animation: fadeIn 0.5s;
+
+  visibility: visible;
+  top: 100%;
+  transform: translate(0, -80%);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.card {
+  animation: createCard 0.5s;
+}
+
+@keyframes createCard {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}

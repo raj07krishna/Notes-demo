@@ -1,0 +1,44 @@
+<div class="container">
+  <button class="delete" mat-icon-button aria-label="delete" (click)="onDelete()">
+    <mat-icon>delete</mat-icon>
+  </button>
+  <div mat-dialog-content>
+    <div class="note-input">
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Message</mat-label>
+        <textarea
+          matInput
+          #text
+          placeholder="Text"
+          [formControl]="noteData"
+        ></textarea>
+      </mat-form-field>
+      <div class="btn-container">
+        <button
+          (click)="getvalue(text.value, '#6666d3', 'blue'); text.value = ''"
+          class="color-button blue"
+        ></button>
+        <button
+          (click)="getvalue(text.value, '#6d4196', 'purple'); text.value = ''"
+          class="color-button purple"
+        ></button>
+        <button
+          (click)="getvalue(text.value, '#ce5757', 'red'); text.value = ''"
+          class="color-button red"
+        ></button>
+        <button
+          (click)="getvalue(text.value, '#43af43', 'green'); text.value = ''"
+          class="color-button green"
+        ></button>
+        <button
+          (click)="getvalue(text.value, '#a8c24d', 'yellow'); text.value = ''"
+          class="color-button yellow"
+        ></button>
+        <button
+          (click)="getvalue(text.value, '#76e7c2', 'sky'); text.value = ''"
+          class="color-button sky"
+        ></button>
+      </div>
+    </div>
+  </div>
+</div>

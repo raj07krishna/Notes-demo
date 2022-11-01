@@ -1,0 +1,12 @@
+<mat-card #card class="card" [ngStyle]="cardBackgroundcolor">
+  <mat-card-content>
+    <p>{{ cardData.data }}</p>
+  </mat-card-content>
+  <mat-card-footer>
+    <div class="date">
+        <span>
+            {{ cardData.date | date: "mediumDate" }}
+        </span>
+    </div>
+  </mat-card-footer>
+</mat-card>
