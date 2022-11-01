@@ -32,22 +32,22 @@
   color: white;
 }
 
-.blue {
+.blue-color {
   background-color: #6666d3;
 }
-.purple {
+.purple-color {
   background-color: #6d4196;
 }
-.red {
+.red-color {
   background-color: #ce5757;
 }
-.green {
+.green-color {
   background-color: #43af43;
 }
-.yellow {
+.yellow-color {
   background-color: #a8c24d;
 }
-.sky {
+.sky-color {
   background-color: #76e7c2;
 }
 
@@ -62,8 +62,7 @@
 }
 
 .card-container {
-  display: flex;
-  flex-wrap: wrap;
+  position: relative;
 }
 
 .container {
@@ -101,7 +100,6 @@ h1 {
 
 .animate-color-strips.show-strips {
   animation: fadeIn 0.5s;
-
   visibility: visible;
   top: 100%;
   transform: translate(0, -80%);
@@ -125,15 +123,22 @@ h1 {
   }
 }
 
-.card {
-  animation: createCard 0.5s;
+.card-wrapper {
+  transition: all 0.5s ease;
+  display: flex;
+  flex-wrap: wrap;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
 }
 
-@keyframes createCard {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
+
+.card-wrapper.purple,
+.card-wrapper.sky, .card-wrapper.yellow, .card-wrapper.red, .card-wrapper.blue,
+.card-wrapper.green {
+  bottom: 100%;
+  transform: translate(0, 100%);
 }
+
+

@@ -1,6 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatSnackBarRef, MAT_SNACK_BAR_DATA } from '@angular/material/snack-bar';
-import { SnackbarService } from 'src/app/services/snackbar.service';
 
 @Component({
   selector: 'app-toast',
@@ -13,7 +12,6 @@ export class ToastComponent implements OnInit {
   action: string
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: any,
   public snackBarRef: MatSnackBarRef<ToastComponent>,
-  private snackbar: SnackbarService
   ) {
     this.message = data.message;
     this.showUndo = data.showUndo;
@@ -27,7 +25,6 @@ export class ToastComponent implements OnInit {
   }
 
   onUndo() {
-    this.snackbar.dataFromSnackbar.next(this.action);
     this.snackBarRef.dismiss();
   }
 }

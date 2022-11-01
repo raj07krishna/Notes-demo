@@ -19,7 +19,7 @@
           <h1>Show All</h1>
         </div></mat-list-item
       >
-      <mat-list-item (click)="filterCard('blue')" role="listitem" class="blue"
+      <mat-list-item (click)="filterCard('blue')" role="listitem" class="blue-color"
         ><div class="nav-button">
           <mat-icon>done</mat-icon>
           <h1>Select</h1>
@@ -28,19 +28,19 @@
       <mat-list-item
         (click)="filterCard('purple')"
         role="listitem"
-        class="purple"
+        class="purple-color"
         ><div class="nav-button">
           <mat-icon>done</mat-icon>
           <h1>Select</h1>
         </div></mat-list-item
       >
-      <mat-list-item (click)="filterCard('red')" role="listitem" class="red"
+      <mat-list-item (click)="filterCard('red')" role="listitem" class="red-color"
         ><div class="nav-button">
           <mat-icon>done</mat-icon>
           <h1>Select</h1>
         </div></mat-list-item
       >
-      <mat-list-item (click)="filterCard('green')" role="listitem" class="green"
+      <mat-list-item (click)="filterCard('green')" role="listitem" class="green-color"
         ><div class="nav-button">
           <mat-icon>done</mat-icon>
           <h1>Select</h1>
@@ -49,13 +49,13 @@
       <mat-list-item
         (click)="filterCard('yellow')"
         role="listitem"
-        class="yellow"
+        class="yellow-color"
         ><div class="nav-button">
           <mat-icon>done</mat-icon>
           <h1>Select</h1>
         </div></mat-list-item
       >
-      <mat-list-item (click)="filterCard('sky')" role="listitem" class="sky"
+      <mat-list-item (click)="filterCard('sky')" role="listitem" class="sky-color"
         ><div class="nav-button">
           <mat-icon>done</mat-icon>
           <h1>Select</h1>
@@ -86,33 +86,33 @@
           >
             <button
               (click)="getvalue(text.value, '#6666d3', 'blue'); text.value = ''"
-              class="color-button blue"
+              class="color-button blue-color"
             ></button>
             <button
               (click)="
                 getvalue(text.value, '#6d4196', 'purple'); text.value = ''
               "
-              class="color-button purple"
+              class="color-button purple-color"
             ></button>
             <button
               (click)="getvalue(text.value, '#ce5757', 'red'); text.value = ''"
-              class="color-button red"
+              class="color-button red-color"
             ></button>
             <button
               (click)="
                 getvalue(text.value, '#43af43', 'green'); text.value = ''
               "
-              class="color-button green"
+              class="color-button green-color"
             ></button>
             <button
               (click)="
                 getvalue(text.value, '#a8c24d', 'yellow'); text.value = ''
               "
-              class="color-button yellow"
+              class="color-button yellow-color"
             ></button>
             <button
               (click)="getvalue(text.value, '#76e7c2', 'sky'); text.value = ''"
-              class="color-button sky"
+              class="color-button sky-color"
             ></button>
           </div>
         </div>
@@ -121,12 +121,15 @@
     <br />
 
     <div class="card-container">
-      <app-card
-        class="card"
-        *ngFor="let card of filteredCards; let i = index"
-        [cardData]="card"
-        (click)="openDialog(i)"
-      ></app-card>
+      <div #cardWrapper class="card-wrapper" [ngClass]="className">
+        <app-card
+          
+          class="card"
+          *ngFor="let card of filteredCards; let i = index"
+          [cardData]="card"
+          (click)="openDialog(i)"
+        ></app-card>
+      </div>
     </div>
   </div>
 </mat-drawer-container>

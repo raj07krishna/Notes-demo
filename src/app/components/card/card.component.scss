@@ -3,7 +3,19 @@
   min-width: 150px;
   margin-left: 0.25rem;
   margin-right:0.25rem;
+  animation: createCard 0.5s;
 }
+
+
+@keyframes createCard {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 
 .date {
   text-align: right;
