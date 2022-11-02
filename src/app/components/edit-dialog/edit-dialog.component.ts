@@ -10,6 +10,7 @@ import { IToast } from '../toast/toast.model';
 import { updateCurrentNote, updateNote, showToast, deleteNote } from '../../state/notes.actions';
 import { getNotes } from '../../state/notes.selectors';
 import { INotesState } from '../../state/notes.state';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-edit-dialog',
@@ -20,6 +21,8 @@ export class EditDialogComponent implements OnInit {
   noteData: FormControl = new FormControl('');
   cardData: ICard;
   index: number;
+  subscriptions: Subscription[] = [];
+
   constructor(
     public dialogRef: MatDialogRef<EditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { index: number },
@@ -32,11 +35,11 @@ export class EditDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.noteData.valueChanges
+    this.subscriptions.push(this.noteData.valueChanges
       .pipe(debounceTime(100), distinctUntilChanged())
       .subscribe((data) => {
         this.cardData.data = data;
-      });
+      }));
     this.store
       .select(getNotes)
       .pipe(first())
@@ -92,5 +95,9 @@ export class EditDialogComponent implements OnInit {
     };
     this.store.dispatch(showToast({ toastData: toastInfo }));
     this.dialogRef.close();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subs => subs.unsubscribe())
   }
 }

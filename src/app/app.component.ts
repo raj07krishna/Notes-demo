@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import { ICard, ICurrentCard } from './components/card/card.model';
 import { EditDialogComponent } from './components/edit-dialog/edit-dialog.component';
 import { ToastComponent } from './components/toast/toast.component';
@@ -35,6 +36,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   showColorBUttons = false;
   className = '';
   currentCardIndex: number = 0;
+  subscriptions: Subscription[] = []
   @ViewChild('drawer') public sidenav: MatSidenav;
   @ViewChild('cardWrapper') public cardWrapper: ElementRef;
 
@@ -49,17 +51,17 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.store.select(getNotes).subscribe((data) => {
+    this.subscriptions.push(this.store.select(getNotes).subscribe((data) => {
       console.log(data);
       this.filteredCards = [...data];
       this.backupCards = [...data];
-    });
-    this.store.select(getCurrentNote).subscribe((data: ICurrentCard) => {
+    }));
+    this.subscriptions.push(this.store.select(getCurrentNote).subscribe((data: ICurrentCard) => {
       if (data) {
         this.currentCardData = { ...data.currentCard };
         this.currentCardIndex = data.index;
       }
-    });
+    }));
   }
 
   getvalue(val: string, color: string, colorAsId: string) {
@@ -134,5 +136,8 @@ export class AppComponent implements OnInit, AfterViewInit {
       this.className = value;
     }
     this.sidenav.close();
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subs => subs.unsubscribe())
   }
 }
