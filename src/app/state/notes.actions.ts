@@ -1,6 +1,6 @@
 import { props } from '@ngrx/store';
 import { createAction } from '@ngrx/store';
-import { ICard, ICurrentCard } from '../components/card/card.model';
+import { ICard, ILastChangeCard } from '../components/card/card.model';
 import { IToast } from '../components/toast/toast.model';
 
 export const ADD_NOTE_ACTION = 'add note'
@@ -14,10 +14,10 @@ export const DELETE_ADDED_NOTE = 'delete added note'
 export const UNDO_UPDATED_NOTE = 'indo updated note'
 
 export const addNote = createAction(ADD_NOTE_ACTION, props<{note: ICard}>());
-export const deleteNote = createAction(DELETE_NOTE_ACTION, props<{index:number}>());
-export const updateNote = createAction(UPDATE_NOTE_ACTION, props<{index:number}>());
-export const updateCurrentNote = createAction(UPDATE_CURRENT_CARD, props<{currentNote: ICurrentCard}>());
-export const updateLastChangeNote = createAction(UPDATE_LAST_CHANGE_CARD, props<{lastChangeNote: ICurrentCard}>());
+export const deleteNote = createAction(DELETE_NOTE_ACTION, props<{id:number}>());
+export const updateNote = createAction(UPDATE_NOTE_ACTION, props<{id:number}>());
+export const updateCurrentNote = createAction(UPDATE_CURRENT_CARD, props<{currentNote: ICard}>());
+export const updateLastChangeNote = createAction(UPDATE_LAST_CHANGE_CARD, props<{lastChangeNote: ILastChangeCard}>());
 export const showToast = createAction(SHOW_TOAST_ACTION, props <{toastData: IToast}>())
 export const addDeletedNode = createAction(ADD_DELETED_NOTE);
 export const deleteAddedNote = createAction(DELETE_ADDED_NOTE);

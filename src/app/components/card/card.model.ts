@@ -2,10 +2,10 @@ export interface ICard {
     data: string,
     'background-color': string,
     date: Date | string,
-    colorAsId: string
+    colorAsId: string,
+    id:number
 }
-
-export interface ICurrentCard {
-    currentCard: ICard,
+export interface ILastChangeCard {
+    card: ICard,
     index: number
 }

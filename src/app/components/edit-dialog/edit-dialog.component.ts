@@ -7,7 +7,12 @@ import { ToastComponent } from '../toast/toast.component';
 import { debounceTime, distinctUntilChanged, first } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
 import { IToast } from '../toast/toast.model';
-import { updateCurrentNote, updateNote, showToast, deleteNote } from '../../state/notes.actions';
+import {
+  updateCurrentNote,
+  updateNote,
+  showToast,
+  deleteNote,
+} from '../../state/notes.actions';
 import { getNotes } from '../../state/notes.selectors';
 import { INotesState } from '../../state/notes.state';
 import { Subscription } from 'rxjs';
@@ -25,28 +30,29 @@ export class EditDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<EditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { index: number },
+    @Inject(MAT_DIALOG_DATA) public data: {card:ICard, index: number},
     private _snackBar: MatSnackBar,
     private store: Store<{ notesReducer: INotesState }>
   ) {
     if (data) {
       this.index = data.index;
+      this.cardData = data.card;
+      this.noteData.patchValue(this.cardData.data, {
+        emitEvent: false,
+        onlySelf: true,
+      });
     }
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.noteData.valueChanges
-      .pipe(debounceTime(100), distinctUntilChanged())
-      .subscribe((data) => {
-        this.cardData.data = data;
-      }));
-    this.store
-      .select(getNotes)
-      .pipe(first())
-      .subscribe((data) => {
-        this.cardData = {...data[this.index]};
-        this.noteData.patchValue(this.cardData.data, {emitEvent: false, onlySelf: true});
-      })
+    console.log(this.index);
+    this.subscriptions.push(
+      this.noteData.valueChanges
+        .pipe(debounceTime(100), distinctUntilChanged())
+        .subscribe((data) => {
+          this.cardData.data = data;
+        })
+    );
   }
 
   getvalue(val: string, color: string, colorAsId: string) {
@@ -56,16 +62,17 @@ export class EditDialogComponent implements OnInit {
         'background-color': color,
         date: new Date(),
         colorAsId,
+        id: this.cardData.id
       };
       this.cardData = { ...card };
-      this.store.dispatch(updateCurrentNote({currentNote: {currentCard:card, index:this.index}}))
+      this.store.dispatch(updateCurrentNote({ currentNote: card }));
       this.openSnackBar();
       let toastInfo: IToast = {
         message: 'Note Updated',
         showUndo: true,
         action: 'update',
       };
-      this.store.dispatch(updateNote({ index: this.index }));
+      this.store.dispatch(updateNote({ id: this.cardData.id }));
       this.store.dispatch(showToast({ toastData: toastInfo }));
     } else {
       this.openSnackBar();
@@ -85,7 +92,7 @@ export class EditDialogComponent implements OnInit {
   }
 
   onDelete() {
-    this.store.dispatch(deleteNote({ index: this.index }));
+    this.store.dispatch(deleteNote({ id: this.cardData.id }));
     // this.cards.splice(index, 1);
     this.openSnackBar();
     let toastInfo: IToast = {
@@ -98,6 +105,6 @@ export class EditDialogComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subs => subs.unsubscribe())
+    this.subscriptions.forEach((subs) => subs.unsubscribe());
   }
 }

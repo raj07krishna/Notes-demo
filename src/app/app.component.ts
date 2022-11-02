@@ -11,7 +11,7 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { ICard, ICurrentCard } from './components/card/card.model';
+import { ICard } from './components/card/card.model';
 import { EditDialogComponent } from './components/edit-dialog/edit-dialog.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { IToast } from './components/toast/toast.model';
@@ -28,15 +28,16 @@ import { INotesState } from './state/notes.state';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent implements AfterViewInit, AfterViewInit {
   durationInSeconds = 3;
   currentCardData: ICard;
   filteredCards: ICard[] = [];
   backupCards: ICard[] = [];
   showColorBUttons = false;
   className = '';
+  filterValue = 'all';
   currentCardIndex: number = 0;
-  subscriptions: Subscription[] = []
+  subscriptions: Subscription[] = [];
   @ViewChild('drawer') public sidenav: MatSidenav;
   @ViewChild('cardWrapper') public cardWrapper: ElementRef;
 
@@ -47,21 +48,26 @@ export class AppComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    // this.filterCard('all');
-  }
+    this.subscriptions.push(
+      this.store.select(getNotes).subscribe((data) => {
+        console.log(data);
+        this.filteredCards = [...data];
+        this.backupCards = [...data];
+        this.filterCard(this.filterValue);
+      })
+    );
+    this.subscriptions.push(
+      this.store.select(getCurrentNote).subscribe((data: ICard) => {
+        if (data) {
+          this.currentCardData = { ...data };
+          let index = this.filteredCards.findIndex(
+            (element) => element.id === data.id
+          );
 
-  ngOnInit(): void {
-    this.subscriptions.push(this.store.select(getNotes).subscribe((data) => {
-      console.log(data);
-      this.filteredCards = [...data];
-      this.backupCards = [...data];
-    }));
-    this.subscriptions.push(this.store.select(getCurrentNote).subscribe((data: ICurrentCard) => {
-      if (data) {
-        this.currentCardData = { ...data.currentCard };
-        this.currentCardIndex = data.index;
-      }
-    }));
+          this.currentCardIndex = index;
+        }
+      })
+    );
   }
 
   getvalue(val: string, color: string, colorAsId: string) {
@@ -71,13 +77,14 @@ export class AppComponent implements OnInit, AfterViewInit {
         'background-color': color,
         date: new Date(),
         colorAsId,
+        id: this.filteredCards.length
       };
       this.store.dispatch(addNote({ note: card }));
       this.store.dispatch(
         updateLastChangeNote({
           lastChangeNote: {
-            currentCard: card,
-            index: this.filteredCards.length - 1,
+            card,
+            index: this.filteredCards.length - 1
           },
         })
       );
@@ -106,18 +113,23 @@ export class AppComponent implements OnInit, AfterViewInit {
     });
   }
 
-  openDialog(index: number): void {
+  openDialog(selectedCard: ICard): void {
+    let index = this.filteredCards.findIndex(
+      (element) => element.id === selectedCard.id
+    );
     const dialogRef = this.dialog.open(EditDialogComponent, {
       width: '300px',
       data: {
+        card: selectedCard,
         index,
       },
     });
+
     this.currentCardIndex = index;
     this.store.dispatch(
       updateLastChangeNote({
         lastChangeNote: {
-          currentCard: this.filteredCards[index],
+          card: selectedCard,
           index,
         },
       })
@@ -125,6 +137,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   filterCard(value: string) {
+    this.filterValue = value;
     this.filteredCards = [...this.backupCards];
     if (value === 'all') {
       this.filteredCards = this.filteredCards.slice();
@@ -135,9 +148,11 @@ export class AppComponent implements OnInit, AfterViewInit {
       );
       this.className = value;
     }
-    this.sidenav.close();
+    if (this.sidenav.opened) {
+      this.sidenav.close();
+    }
   }
   ngOnDestroy(): void {
-    this.subscriptions.forEach(subs => subs.unsubscribe())
+    this.subscriptions.forEach((subs) => subs.unsubscribe());
   }
 }

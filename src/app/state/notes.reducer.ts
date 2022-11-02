@@ -1,7 +1,7 @@
 import { on } from '@ngrx/store';
 import { createReducer } from '@ngrx/store';
 import { InitialState } from '@ngrx/store/src/models';
-import { ICard, ICurrentCard } from '../components/card/card.model';
+import { ICard, ILastChangeCard } from '../components/card/card.model';
 import { IToast } from '../components/toast/toast.model';
 import {
   addNote,
@@ -20,34 +20,45 @@ const _notesReducer = createReducer(
   initialState,
   on(addNote, (state: INotesState, action: { note: ICard }) => {
     let newNote = [{ ...action.note }];
+    let id = state.allCards.length - 1;
+    newNote[0].id = id;
     return {
       ...state,
       allCards: [...state.allCards, ...newNote],
     };
   }),
-  on(deleteNote, (state: INotesState, action: { index: number }) => {
+  on(deleteNote, (state: INotesState, action: { id: number }) => {
     let allCards = [...state.allCards];
-    allCards.splice(action.index, 1);
+    let index = allCards.findIndex((element) => element.id === action.id);
+    allCards.splice(index, 1);
+    console.log(index);
     return {
       ...state,
       allCards,
     };
   }),
-  on(updateCurrentNote, (state: INotesState, action: { currentNote: ICurrentCard }) => {
-    return {
-      ...state,
-      currentCardData: { ...action.currentNote },
-    };
-  }),
-  on(updateLastChangeNote, (state: INotesState, action: { lastChangeNote: ICurrentCard }) => {
-    return {
-      ...state,
-      lastChangeCardData: { ...action.lastChangeNote },
-    };
-  }),
-  on(updateNote, (state: INotesState, action: { index: number }) => {
+  on(
+    updateCurrentNote,
+    (state: INotesState, action: { currentNote: ICard }) => {
+      return {
+        ...state,
+        currentCardData: { ...action.currentNote },
+      };
+    }
+  ),
+  on(
+    updateLastChangeNote,
+    (state: any, action: { lastChangeNote: ILastChangeCard }) => {
+      return {
+        ...state,
+        lastChangeCardData: { ...action.lastChangeNote },
+      };
+    }
+  ),
+  on(updateNote, (state: INotesState, action: { id: number }) => {
     let allCards = [...state.allCards];
-    allCards[state.currentCardData.index] = state.currentCardData.currentCard;
+    let index = allCards.findIndex((element) => element.id === action.id);
+    allCards[index] = state.currentCardData;
     return {
       ...state,
       allCards,
@@ -60,25 +71,28 @@ const _notesReducer = createReducer(
       toastInfo: { ...toastInfo },
     };
   }),
-  on(addDeletedNode,(state:INotesState) => {
+  on(addDeletedNode, (state: INotesState) => {
     let allCards = [...state.allCards];
-    allCards.splice(state.lastChangeCardData.index, 0, state.lastChangeCardData.currentCard)
+    allCards.splice(state.lastChangeCardData.index, 0, state.lastChangeCardData.card);
     return {
       ...state,
       allCards,
     };
   }),
-  on(undoUpdatedNote,(state:INotesState) => {
+  on(undoUpdatedNote, (state: INotesState) => {
     let allCards = [...state.allCards];
-    allCards[state.lastChangeCardData.index] = state.lastChangeCardData.currentCard;
+    let index = allCards.findIndex(
+      (element) => element.id === state.lastChangeCardData.index
+    );
+    allCards[index] = state.lastChangeCardData.card;
     return {
       ...state,
       allCards,
     };
   }),
-  on(deleteAddedNote,(state:INotesState) => {
+  on(deleteAddedNote, (state: INotesState) => {
     let allCards = [...state.allCards];
-    allCards.splice(state.lastChangeCardData.index, 1)
+    allCards.splice(state.lastChangeCardData.index, 1);
     return {
       ...state,
       allCards,

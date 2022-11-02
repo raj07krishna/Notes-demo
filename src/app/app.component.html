@@ -129,7 +129,7 @@
           class="card"
           *ngFor="let card of filteredCards; let i = index"
           [cardData]="card"
-          (click)="openDialog(i)"
+          (click)="openDialog(card)"
         ></app-card>
       </div>
     </div>
