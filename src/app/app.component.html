@@ -66,6 +66,7 @@
 
   <div class="sidenav-content">
     <mat-card class="input-card">
+    <mat-card-content>
       <div class="note-input">
         <mat-form-field class="text-area" appearance="outline">
           <mat-label>Message</mat-label>
@@ -74,10 +75,10 @@
             #text
             placeholder="Text"
             (focus)="showColorBUttons = true"
-            (blur)="showColorBUttons = false"
+            
           ></textarea>
         </mat-form-field>
-        <div class="btn-container">
+        <div *ngIf="showColorBUttons" class="btn-container">
           <div
             class="animate-color-strips"
             [ngClass]="{
@@ -117,6 +118,7 @@
           </div>
         </div>
       </div>
+    </mat-card-content>
     </mat-card>
     <br />
 

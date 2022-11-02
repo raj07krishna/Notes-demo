@@ -1,6 +1,10 @@
 <div class="container">
   <mat-icon aria-hidden="false" aria-label="info">info</mat-icon>
-  <span class="example-pizza-party"> {{ message }} </span>
-  <button *ngIf="showUndo" mat-button color="warn" (click)="onUndo()">Undo</button>
-  <button *ngIf="!showUndo" mat-button color="warn" (click)="onDismiss()">Dismiss</button>
+  <span class="example-pizza-party"> {{ toastData.message }} </span>
+  <button *ngIf="toastData.showUndo" mat-button color="warn" (click)="onUndo()">
+    Undo
+  </button>
+  <button *ngIf="!toastData.showUndo" mat-button color="warn" (click)="onDismiss()">
+    Dismiss
+  </button>
 </div>

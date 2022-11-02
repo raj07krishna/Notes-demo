@@ -4,3 +4,8 @@ export interface ICard {
     date: Date | string,
     colorAsId: string
 }
+
+export interface ICurrentCard {
+    currentCard: ICard,
+    index: number
+}

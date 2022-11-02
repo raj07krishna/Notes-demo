@@ -18,6 +18,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatListModule} from '@angular/material/list';
+import { StoreModule } from '@ngrx/store';
+import { notesReducer } from './state/notes.reducer';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import {MatListModule} from '@angular/material/list';
     MatToolbarModule,
     MatFormFieldModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    StoreModule.forRoot({notesReducer: notesReducer})
   ],
   providers: [],
   bootstrap: [AppComponent],

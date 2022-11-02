@@ -9,9 +9,18 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { MatSidenav } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ICard } from './components/card/card.model';
+import { Store } from '@ngrx/store';
+import { ICard, ICurrentCard } from './components/card/card.model';
 import { EditDialogComponent } from './components/edit-dialog/edit-dialog.component';
 import { ToastComponent } from './components/toast/toast.component';
+import { IToast } from './components/toast/toast.model';
+import {
+  addNote,
+  showToast,
+  updateLastChangeNote,
+} from './state/notes.actions';
+import { getCurrentNote, getNotes } from './state/notes.selectors';
+import { INotesState } from './state/notes.state';
 
 @Component({
   selector: 'app-root',
@@ -19,124 +28,38 @@ import { ToastComponent } from './components/toast/toast.component';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  cards: ICard[] = [
-    {
-      data: 'kdsfjhksjdfh',
-      'background-color': '#6666d3',
-      date: '2022-11-01T14:47:04.204Z',
-      colorAsId: 'blue',
-    },
-    {
-      data: 'You may achieve that using a custom snackBar component. On your custom component template include your message and buttons for the actions',
-      'background-color': '#ce5757',
-      date: '2022-11-01T14:48:48.211Z',
-      colorAsId: 'red',
-    },
-    {
-      data: 'Formats a date value according to locale rules.',
-      'background-color': '#43af43',
-      date: '2022-11-01T14:48:59.494Z',
-      colorAsId: 'green',
-    },
-    {
-      data: 'Angular Material provides two sets of components designed to add collapsible side content (often navigation, though it can be any content) alongside some primary content. These are the sidenav and drawer components.',
-      'background-color': '#a8c24d',
-      date: '2022-11-01T14:49:13.231Z',
-      colorAsId: 'yellow',
-    },
-    {
-      data: "Notice how in the solution we're spending time on push() and pop() so we can save time on getMax(). That's because we chose to optimize for the time cost of calls to getMax().",
-      'background-color': '#76e7c2',
-      date: '2022-11-01T14:49:50.308Z',
-      colorAsId: 'sky',
-    },
-    {
-      data: ' creating model driven form, i am getting an error: E',
-      'background-color': '#6d4196',
-      date: '2022-11-01T14:50:08.809Z',
-      colorAsId: 'purple',
-    },
-    {
-      data: "9\n\n\nI currently have a snackbar element with a mat-progress-bar inside it. I'd like to close the snackbar element. My code currently looks like this.",
-      'background-color': '#ce5757',
-      date: '2022-11-01T14:50:20.827Z',
-      colorAsId: 'red',
-    },
-    {
-      data: " formControlName must be used with a parent formGroup directive. You'll want to add a formGroup directive and pass it an existing FormGroup instance (you can create one in your class).",
-      'background-color': '#43af43',
-      date: '2022-11-01T14:50:33.146Z',
-      colorAsId: 'green',
-    },
-    {
-      data: 'kdsfjhksjdfh',
-      'background-color': '#6666d3',
-      date: '2022-11-01T14:47:04.204Z',
-      colorAsId: 'blue',
-    },
-    {
-      data: 'You may achieve that using a custom snackBar component. On your custom component template include your message and buttons for the actions',
-      'background-color': '#ce5757',
-      date: '2022-11-01T14:48:48.211Z',
-      colorAsId: 'red',
-    },
-    {
-      data: 'Formats a date value according to locale rules.',
-      'background-color': '#43af43',
-      date: '2022-11-01T14:48:59.494Z',
-      colorAsId: 'green',
-    },
-    {
-      data: 'Angular Material provides two sets of components designed to add collapsible side content (often navigation, though it can be any content) alongside some primary content. These are the sidenav and drawer components.',
-      'background-color': '#a8c24d',
-      date: '2022-11-01T14:49:13.231Z',
-      colorAsId: 'yellow',
-    },
-    {
-      data: "Notice how in the solution we're spending time on push() and pop() so we can save time on getMax(). That's because we chose to optimize for the time cost of calls to getMax().",
-      'background-color': '#76e7c2',
-      date: '2022-11-01T14:49:50.308Z',
-      colorAsId: 'sky',
-    },
-    {
-      data: ' creating model driven form, i am getting an error: E',
-      'background-color': '#6d4196',
-      date: '2022-11-01T14:50:08.809Z',
-      colorAsId: 'purple',
-    },
-    {
-      data: "9\n\n\nI currently have a snackbar element with a mat-progress-bar inside it. I'd like to close the snackbar element. My code currently looks like this.",
-      'background-color': '#ce5757',
-      date: '2022-11-01T14:50:20.827Z',
-      colorAsId: 'red',
-    },
-    {
-      data: " formControlName must be used with a parent formGroup directive. You'll want to add a formGroup directive and pass it an existing FormGroup instance (you can create one in your class).",
-      'background-color': '#43af43',
-      date: '2022-11-01T14:50:33.146Z',
-      colorAsId: 'green',
-    },
-  ];
   durationInSeconds = 3;
   currentCardData: ICard;
   filteredCards: ICard[] = [];
+  backupCards: ICard[] = [];
   showColorBUttons = false;
-  className = ''
+  className = '';
+  currentCardIndex: number = 0;
   @ViewChild('drawer') public sidenav: MatSidenav;
   @ViewChild('cardWrapper') public cardWrapper: ElementRef;
 
   constructor(
     private _snackBar: MatSnackBar,
     public dialog: MatDialog,
-    private renderer: Renderer2
+    private store: Store<{ notesReducer: INotesState }>
   ) {}
 
   ngAfterViewInit(): void {
-    this.filterCard('all');
+    // this.filterCard('all');
   }
 
   ngOnInit(): void {
-   
+    this.store.select(getNotes).subscribe((data) => {
+      console.log(data);
+      this.filteredCards = [...data];
+      this.backupCards = [...data];
+    });
+    this.store.select(getCurrentNote).subscribe((data: ICurrentCard) => {
+      if (data) {
+        this.currentCardData = { ...data.currentCard };
+        this.currentCardIndex = data.index;
+      }
+    });
   }
 
   getvalue(val: string, color: string, colorAsId: string) {
@@ -147,70 +70,68 @@ export class AppComponent implements OnInit, AfterViewInit {
         date: new Date(),
         colorAsId,
       };
-      this.cards.push(card);
-      this.filteredCards.push(card);
-      this.openSnackBar({
+      this.store.dispatch(addNote({ note: card }));
+      this.store.dispatch(
+        updateLastChangeNote({
+          lastChangeNote: {
+            currentCard: card,
+            index: this.filteredCards.length - 1,
+          },
+        })
+      );
+      this.openSnackBar();
+      let toastInfo: IToast = {
         message: 'Note Added',
         showUndo: true,
-      });
+        action: 'delete',
+      };
+      this.store.dispatch(showToast({ toastData: toastInfo }));
     } else {
-      this.openSnackBar({
+      this.openSnackBar();
+      let toastInfo: IToast = {
         message: 'Please enter text',
         showUndo: false,
-      });
+        action: 'dismiss',
+      };
+      this.store.dispatch(showToast({ toastData: toastInfo }));
     }
-    console.log(this.cards);
+    this.showColorBUttons = false;
   }
 
-  openSnackBar(data) {
+  openSnackBar() {
     this._snackBar.openFromComponent(ToastComponent, {
       duration: this.durationInSeconds * 1000,
-      data: {
-        message: data.message,
-        showUndo: data.showUndo,
-        action: data.action,
-      },
     });
   }
 
   openDialog(index: number): void {
     const dialogRef = this.dialog.open(EditDialogComponent, {
       width: '300px',
-      data: this.cards[index],
+      data: {
+        index,
+      },
     });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      switch (result.action) {
-        case 'delete':
-          this.currentCardData = result.data;
-          this.cards.splice(index, 1);
-          this.filteredCards.splice(index, 1);
-          this.openSnackBar({
-            message: 'Note Deleted',
-            showUndo: true,
-            action: 'redo',
-          });
-          break;
-
-        default:
-          this.currentCardData = result.data;
-          this.cards[index] = this.currentCardData;
-          this.filteredCards[index] = this.currentCardData;
-          break;
-      }
-    });
+    this.currentCardIndex = index;
+    this.store.dispatch(
+      updateLastChangeNote({
+        lastChangeNote: {
+          currentCard: this.filteredCards[index],
+          index,
+        },
+      })
+    );
   }
 
   filterCard(value: string) {
+    this.filteredCards = [...this.backupCards];
     if (value === 'all') {
-      this.filteredCards = this.cards.slice();
-      this.className = ''
+      this.filteredCards = this.filteredCards.slice();
+      this.className = '';
     } else {
-      this.filteredCards = [];
-      this.filteredCards = this.cards.filter(
+      this.filteredCards = this.filteredCards.filter(
         (card) => card.colorAsId === value
       );
-      this.className = value
+      this.className = value;
     }
     this.sidenav.close();
   }

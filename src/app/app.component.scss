@@ -3,13 +3,13 @@
 }
 
 .input-card {
-  height: 100px;
   width: 95%;
   margin: 1rem;
 }
 .color-button {
-  min-width: 150px;
-  max-width: 150px;
+  width: 150px;
+  flex-grow: 1;
+  flex-shrink: 0;
   height: 20px;
   outline: none;
   border: none;
@@ -19,7 +19,7 @@
 .btn-container {
   display: flex;
   width: 100%;
-  visibility: hidden;
+  visibility: visible;
   position: relative;
 }
 
@@ -93,16 +93,12 @@ h1 {
 
 .animate-color-strips {
   transition: all 0.5s ease;
-  position: absolute;
-  top: 0;
   animation: fadeOut 0.5s;
 }
 
 .animate-color-strips.show-strips {
   animation: fadeIn 0.5s;
   visibility: visible;
-  top: 100%;
-  transform: translate(0, -80%);
 }
 
 @keyframes fadeIn {
@@ -128,17 +124,16 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
+  top:0;
+  left:0;
 }
 
-
 .card-wrapper.purple,
-.card-wrapper.sky, .card-wrapper.yellow, .card-wrapper.red, .card-wrapper.blue,
+.card-wrapper.sky,
+.card-wrapper.yellow,
+.card-wrapper.red,
+.card-wrapper.blue,
 .card-wrapper.green {
   bottom: 100%;
   transform: translate(0, 100%);
 }
-
-
