@@ -4,11 +4,7 @@ import {
   MAT_SNACK_BAR_DATA,
 } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
-import {
-  addDeletedNode,
-  deleteAddedNote,
-  undoUpdatedNote,
-} from 'src/app/state/notes.actions';
+import { deleteAddedNote, addDeletedNode, undoUpdatedNote } from '../../state/notes.actions';
 import { getToastInfo } from '../../state/notes.selectors';
 import { IToast } from './toast.model';
 

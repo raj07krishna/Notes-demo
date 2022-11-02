@@ -6,15 +6,10 @@ import { ICard } from '../card/card.model';
 import { ToastComponent } from '../toast/toast.component';
 import { debounceTime, distinctUntilChanged, first } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
-import { INotesState } from 'src/app/state/notes.state';
-import {
-  deleteNote,
-  showToast,
-  updateCurrentNote,
-  updateNote,
-} from 'src/app/state/notes.actions';
 import { IToast } from '../toast/toast.model';
-import { getCurrentNote, getNotes } from 'src/app/state/notes.selectors';
+import { updateCurrentNote, updateNote, showToast, deleteNote } from '../../state/notes.actions';
+import { getNotes } from '../../state/notes.selectors';
+import { INotesState } from '../../state/notes.state';
 
 @Component({
   selector: 'app-edit-dialog',

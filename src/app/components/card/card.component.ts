@@ -1,11 +1,7 @@
 import {
   Component,
-  ElementRef,
   Input,
   OnChanges,
-  OnInit,
-  Renderer2,
-  ViewChild,
 } from '@angular/core';
 import { MatCard } from '@angular/material/card';
 import { ICard } from './card.model';
